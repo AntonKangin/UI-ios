@@ -10,6 +10,8 @@ import UIKit
 
 class ProfileHeaderView: UIView {
     
+    private var statusText: String = ""
+    
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "avatar")
@@ -28,23 +30,34 @@ class ProfileHeaderView: UIView {
     }()
     
     private let titleLabel: UILabel = {
-       let titleLabel = UILabel()
+        let titleLabel = UILabel()
         titleLabel.text = "Anton Kangin"
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .black
         titleLabel.numberOfLines = 1
-        titleLabel.textAlignment = .center
+        titleLabel.textAlignment = .left
         return titleLabel
     }()
     
     private let statusLabel: UILabel = {
-       let statusLabel = UILabel()
+        let statusLabel = UILabel()
         statusLabel.text = "Waiting for something..."
         statusLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         statusLabel.textColor = .gray
         statusLabel.numberOfLines = 1
         statusLabel.textAlignment = .left
         return statusLabel
+    }()
+    
+    private let statusTextField: UITextField = {
+        let statusTextField = UITextField()
+        statusTextField.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        statusTextField.textColor = .black
+        statusTextField.textAlignment = .center
+        statusTextField.placeholder = "Inter your status"
+        statusTextField.backgroundColor = .white
+        statusTextField.addTarget(self, action: #selector(textFieldEdited), for: .editingChanged)
+        return statusTextField
     }()
     
     override init(frame: CGRect) {
@@ -54,6 +67,7 @@ class ProfileHeaderView: UIView {
         addSubview(butonShowStatus)
         addSubview(titleLabel)
         addSubview(statusLabel)
+        addSubview(statusTextField)
     }
     
     required init?(coder: NSCoder) {
@@ -67,19 +81,30 @@ class ProfileHeaderView: UIView {
     }
     
     @objc private func buttonStatusPressed() {
-        print(statusLabel.text ?? "")
+        guard !statusText.isEmpty else {
+            
+            return
+        }
+        statusLabel.text = statusText
+    }
+    
+    @objc private func textFieldEdited() {
+        if let newStatus = statusTextField.text {
+            statusText = newStatus
+        }
     }
     
     private func setUpView() {
         
         let margin: CGFloat = 16
-        let topMarginLabel: CGFloat = 27
-        let marginButtonLabel: CGFloat = 34
+        let topMargin: CGFloat = 27
         
         let imageSize: CGFloat = 100
+        let imageBottom: CGFloat = self.safeAreaInsets.top + avatarImageView.frame.height + margin
         
-        let buttonFrameY: CGFloat = self.safeAreaInsets.top + avatarImageView.frame.height + 2 * margin
         let buttonHeigth: CGFloat = 50
+        
+        let statusTextFieldHeight: CGFloat = 40
         
         avatarImageView.frame = CGRect(x: margin,
                                        y: self.safeAreaInsets.top + margin,
@@ -91,24 +116,36 @@ class ProfileHeaderView: UIView {
         
         titleLabel.sizeToFit()
         titleLabel.frame = CGRect(x: (self.frame.width - titleLabel.frame.width) / 2,
-                                  y: self.safeAreaInsets.top + topMarginLabel,
+                                  y: self.safeAreaInsets.top + topMargin,
                                   width: titleLabel.frame.width,
                                   height: titleLabel.frame.height)
         
         statusLabel.sizeToFit()
         statusLabel.frame = CGRect(x: margin * 2 + imageSize,
-                                   y: buttonFrameY - marginButtonLabel - statusLabel.frame.height,
-                                  width: statusLabel.frame.width,
-                                  height: statusLabel.frame.height)
+                                   y: imageBottom - margin - statusLabel.frame.height,
+                                   width: statusLabel.frame.width,
+                                   height: statusLabel.frame.height)
         
         butonShowStatus.frame = CGRect(x: margin,
-                                       y: buttonFrameY,
+                                       y: imageBottom + 2 * margin,
                                        width: self.frame.width - margin * 2,
                                        height: buttonHeigth)
-        butonShowStatus.layer.cornerRadius = 4
+        butonShowStatus.layer.cornerRadius = 12
         butonShowStatus.layer.shadowOffset = CGSize(width: 4, height: 4)
         butonShowStatus.layer.shadowRadius = 4
         butonShowStatus.layer.shadowColor = UIColor.black.cgColor
         butonShowStatus.layer.shadowOpacity = 0.7
+        
+        statusTextField.sizeToFit()
+        statusTextField.frame = CGRect(x: margin * 2 + imageSize,
+                                       y: imageBottom - margin,
+                                       width: self.frame.width - imageSize - 3 * margin,
+                                       height: statusTextFieldHeight)
+        statusTextField.layer.cornerRadius = 12
+        statusTextField.layer.borderWidth = 1
+        statusTextField.layer.borderColor = UIColor.black.cgColor
+        
+        
+        
     }
 }
