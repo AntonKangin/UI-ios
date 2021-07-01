@@ -23,6 +23,7 @@ class ProfileHeaderView: UIView {
         buttonStatus.setTitle("Show status", for: .normal)
         buttonStatus.backgroundColor = .systemBlue
         buttonStatus.setTitleColor(.white, for: .normal)
+        buttonStatus.addTarget(self, action: #selector(buttonStatusPressed), for: .touchUpInside)
         return buttonStatus
     }()
     
@@ -63,6 +64,10 @@ class ProfileHeaderView: UIView {
         super.layoutSubviews()
         
         setUpView()
+    }
+    
+    @objc private func buttonStatusPressed() {
+        print(statusLabel.text ?? "")
     }
     
     private func setUpView() {
