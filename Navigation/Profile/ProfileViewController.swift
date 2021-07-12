@@ -10,6 +10,11 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print(type(of: self), #function)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
